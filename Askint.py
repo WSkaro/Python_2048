@@ -22,3 +22,14 @@ def get_input(message: str, maximum_include=-1) -> int:
             print("too big")
             valid = False
     return int(n)
+
+moves: str = "zqsd"
+
+def isZQSD(s: str) -> bool:
+    """function that checks if a character in the string is a z, q, s or d"""
+    global moves
+    if s == "": return False
+    for ch in s:
+        if not ch in moves:
+            return False
+    return True
