@@ -10,22 +10,28 @@ def Launch_2048():
     grid_size: int = get_input("Choisissez une taille de grille: ")
     grid_2048: List[List[int]] = [[0 for _ in range(grid_size)] for _ in range(grid_size)]
     
-    empty_tiles: list[tuple[int, int]] = list_empty_and_busy_tiles(grid_2048)
-    busy_tiles: list[tuple[int, int]] = []
+    grid_2048 = \
+        [
+            [2,2,2,2],
+            [0,0,0,2],
+            [0,0,0,2],
+            [0,0,0,2],
+        ]
     
-    add_tiles(grid_2048, empty_tiles, busy_tiles)
-    add_tiles(grid_2048, empty_tiles, busy_tiles)
+    empty_tiles: list[list[int, int]] = list_empty_and_busy_tiles(grid_2048)
+    
+    add_tiles(grid_2048, empty_tiles)
+    add_tiles(grid_2048, empty_tiles)
     
     show_grid(grid_2048)
     
     print(empty_tiles)
-    print(busy_tiles)
     print(grid_2048)
     
     
     run: bool = True
     while run:
-        movement(grid_2048, empty_tiles, busy_tiles)
+        movement(grid_2048, empty_tiles)
 
 def main():
         print("---------------------༼ つ ◕_◕ ༽つ---------------------")
@@ -70,175 +76,36 @@ def random_tiles():
     return random.choices([2, 4], weights=[9, 1])[0]
 
 
-def list_empty_and_busy_tiles(grid_2048):
-    empty_tiles: list[tuple[int, int]] = []
+def list_empty_and_busy_tiles(grid_2048) -> list[list[int, int]]:
+    empty_tiles: list[list[int, int]] = []
+
     for i in range(len(grid_2048)):
         for j in range(len(grid_2048[i])):
             if grid_2048[i][j] == 0:
-                empty_tiles.append((i, j))
+                empty_tiles.append([i, j])
+
     return empty_tiles
 
 
-def add_tiles(grid_2048, empty_tiles, busy_tiles):
+def add_empty_tile(empty_tiles: list[list[int]], i: int, j: int):
+    empty_tiles.append([i, j])
+
+def add_tiles(grid_2048, empty_tiles):
+    return
     position = random.choice(empty_tiles)
     pos0 = position[0]
     pos1 = position[1]
-    busy_tiles.append(position)
     empty_tiles.remove(position)
     
     grid_2048[pos0][pos1] = random_tiles()
-    return busy_tiles
 
 
-def movement(grid_2048, empty_tiles, busy_tiles):
-    move = input("Déplacer les tuiles (Z/Q/S/D) ou M pour quitter : ").lower()
-    
-    if move == "m":
-        print("Merci d'avoir joué et à bientôt !")
-        exit()
-    
-    if move == "z":
-        for j in range(len(grid_2048[0])):
-            for i in range(1, len(grid_2048)):
-                if grid_2048[i][j] != 0:
-                    for k in range(i, 0, -1):
-                        if grid_2048[k - 1][j] == 0:
-                            grid_2048[k - 1][j] = grid_2048[k][j]
-                            grid_2048[k][j] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            if (k - 1, j) in empty_tiles:
-                                print(f"empty & busy avant modif {empty_tiles} ; {busy_tiles}")
-                                empty_tiles.remove((k - 1, j))
-                                print(f"empty après remove {empty_tiles}")
-                                busy_tiles.append((k - 1, j))
-                                print(f"busy après append {busy_tiles}")
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))
-                        elif grid_2048[k - 1][j] == grid_2048[k][j]:
-                            grid_2048[k - 1][j] *= 2
-                            grid_2048[k][j] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            if (k - 1, j) in busy_tiles:
-                                print(f"empty & busy avant modif {empty_tiles} ; {busy_tiles}")
-                                busy_tiles.remove((k - 1, j))
-                                print(f"busy après remove {busy_tiles}")
-                                empty_tiles.append((k - 1, j))
-                                print(f"empty après append {empty_tiles}")
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))
+def update_empty_tile(empty_tiles: list[list[int]], i: int, j: int, new_i: int, new_j: int):
+    index: int = empty_tiles.index([i, j])
+    empty_tiles[index][0] = new_i
+    empty_tiles[index][1] = new_j
 
-
-    if move == "q":
-        for i in range(len(grid_2048)):
-            for j in range(1, len(grid_2048[i])):
-                if grid_2048[i][j] != 0:
-                    for k in range(j, 0, -1):
-                        if grid_2048[i][k - 1] == 0:
-                            grid_2048[i][k - 1] = grid_2048[i][k]
-                            grid_2048[i][k] = 0
-                        elif grid_2048[i][k - 1] == grid_2048[i][k]:
-                            grid_2048[i][k - 1] *= 2
-                            grid_2048[i][k] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            """if (k - 1, j) in empty_tiles:
-                                empty_tiles.remove((k - 1, j))
-                                busy_tiles.append((k - 1, j))
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))"""
-                        elif grid_2048[k - 1][j] == grid_2048[k][j]:
-                            grid_2048[k - 1][j] *= 2
-                            grid_2048[k][j] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            """if (k - 1, j) in busy_tiles:
-                                busy_tiles.remove((k - 1, j))
-                                empty_tiles.append((k - 1, j))
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))"""
-                            break
-                        else:
-                            break
-
-    if move == "s":
-        for j in range(len(grid_2048[0])):
-            for i in range(len(grid_2048) - 2, -1, -1):
-                if grid_2048[i][j] != 0:
-                    for k in range(i, len(grid_2048) - 1):
-                        if grid_2048[k + 1][j] == 0:
-                            grid_2048[k + 1][j] = grid_2048[k][j]
-                            grid_2048[k][j] = 0
-                        elif grid_2048[k + 1][j] == grid_2048[k][j]:
-                            grid_2048[k + 1][j] *= 2
-                            grid_2048[k][j] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            """if (k - 1, j) in empty_tiles:
-                                empty_tiles.remove((k - 1, j))
-                                busy_tiles.append((k - 1, j))
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))"""
-                        elif grid_2048[k - 1][j] == grid_2048[k][j]:
-                            grid_2048[k - 1][j] *= 2
-                            grid_2048[k][j] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            """if (k - 1, j) in busy_tiles:
-                                busy_tiles.remove((k - 1, j))
-                                empty_tiles.append((k - 1, j))
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))"""
-                            break
-                        else:
-                            break
-
-    if move == "d":
-        for i in range(len(grid_2048)):
-            for j in range(len(grid_2048[i]) - 2, -1, -1):
-                if grid_2048[i][j] != 0:
-                    for k in range(j, len(grid_2048[i]) - 1):
-                        if grid_2048[i][k + 1] == 0:
-                            grid_2048[i][k + 1] = grid_2048[i][k]
-                            grid_2048[i][k] = 0
-                        elif grid_2048[i][k + 1] == grid_2048[i][k]:
-                            grid_2048[i][k + 1] *= 2
-                            grid_2048[i][k] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            """if (k - 1, j) in empty_tiles:
-                                empty_tiles.remove((k - 1, j))
-                                busy_tiles.append((k - 1, j))
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))"""
-                        elif grid_2048[k - 1][j] == grid_2048[k][j]:
-                            grid_2048[k - 1][j] *= 2
-                            grid_2048[k][j] = 0
-                            # Mettre à jour les listes des cases vides et occupées
-                            """if (k - 1, j) in busy_tiles:
-                                busy_tiles.remove((k - 1, j))
-                                empty_tiles.append((k - 1, j))
-                            if (k, j) in busy_tiles:
-                                busy_tiles.remove((k, j))
-                                empty_tiles.append((k, j))"""
-                            break
-                        else:
-                            break
-
-    # Ajouter une nouvelle tuile et actualiser l'affichage
-    add_tiles(grid_2048, empty_tiles, busy_tiles)
-    show_grid(grid_2048)
-    print(empty_tiles)
-    print(busy_tiles) 
-
-    
-    return grid_2048
-Launch_2048()
-
-
-"""
-def movement(grid_2048, empty_tiles, busy_tiles, all_tiles):
+def movement(grid_2048, empty_tiles):
     move = check_valid_input()
     
     if move == "m":
@@ -246,33 +113,117 @@ def movement(grid_2048, empty_tiles, busy_tiles, all_tiles):
         exit()
     
     if move == "z":
-        for tiles in busy_tiles:
-            print(tiles)
-            print(tiles[0])
-            print(tiles[1])
-            print(f"devra être nouv coord{(tiles[0] + 1, tiles[1])}")
-            print(grid_2048)
-            
-            
-            while (tiles[0] + 1, tiles[1]) in all_tiles:
-                print("while verif")
-                next_tile_value = grid_2048[tiles[0]][tiles[1]] 
-                print(f"next_tile_value est {next_tile_value}")
-                grid_2048[tiles[0]][tiles[1]] = 0
-                grid_2048[tiles[0] + 1][tiles[1]] = next_tile_value
-                print(f"tiles[0] + 1 est {tiles[0]}")
-                grid_2048[tiles[0]][tiles[1]] = next_tile_value
-                print(f"grid_2048[tiles[0]][tiles[1]] est {grid_2048[tiles[0]][tiles[1]]}")
-    
+        for i in range(len(grid_2048)):
+            k_start_index = 0
+            for j in range(1, len(grid_2048[i])):
+                if grid_2048[j][i] == 0:
+                    continue
+                
+                for k in range(k_start_index, j):
+                    found: bool = False
+                    if grid_2048[k][i] == 0:
+                        k_start_index = k
+                        update_empty_tile(empty_tiles, k, i, j, i)
+                        found = True
+                        
+                    if grid_2048[k][i] == grid_2048[j][i]:
+                        add_empty_tile(empty_tiles, j, i)
+                        k_start_index += 1
+                        found = True
+                    
+                    if found == False:
+                        continue
+                    
+                    grid_2048[k][i] += grid_2048[j][i]
+                    grid_2048[j][i] = 0
+                    break
+
+
     if move == "q":
-        pass
-    
+        for i in range(len(grid_2048)):
+            k_start_index = 0
+            for j in range(1, len(grid_2048)):
+                if grid_2048[i][j] == 0:
+                    continue
+                
+                for k in range(k_start_index, j):
+                    found: bool = False
+                    if grid_2048[i][k] == 0:
+                        k_start_index = k
+                        update_empty_tile(empty_tiles, i, k, i, j)
+                        found = True
+                        
+                    if grid_2048[i][k] == grid_2048[i][j]:
+                        add_empty_tile(empty_tiles, i, j)
+                        k_start_index += 1
+                        found = True
+                    
+                    if found == False:
+                        continue
+                    
+                    grid_2048[i][k] += grid_2048[i][j]
+                    grid_2048[i][j] = 0
+                    break
+
     if move == "s":
-        pass
-    
+        for i in range(len(grid_2048)):
+            k_start_index = len(grid_2048) - 1
+            for j in range(len(grid_2048[i])):
+                if grid_2048[j][i] == 0:
+                    continue
+                
+                for k in range(k_start_index, j, -1):
+                    found: bool = False
+                    if grid_2048[k][i] == 0:
+                        k_start_index = k
+                        update_empty_tile(empty_tiles, k, i, j, i)
+                        found = True
+                        
+                    if grid_2048[k][i] == grid_2048[j][i]:
+                        add_empty_tile(empty_tiles, j, i)
+                        k_start_index -= 1
+                        found = True
+                    
+                    if found == False:
+                        continue
+                    
+                    grid_2048[k][i] += grid_2048[j][i]
+                    grid_2048[j][i] = 0
+                    break
+
+
     if move == "d":
-        pass
-    
-    
+        for i in range(len(grid_2048)):
+            k_start_index = len(grid_2048[i]) - 1
+            for j in range(len(grid_2048)):
+                if grid_2048[i][j] == 0:
+                    continue
+                
+                for k in range(k_start_index, j, -1):
+                    found: bool = False
+                    if grid_2048[i][k] == 0:
+                        k_start_index = k
+                        update_empty_tile(empty_tiles, i, k, i, j)
+                        found = True
+                        
+                    if grid_2048[i][k] == grid_2048[i][j]:
+                        add_empty_tile(empty_tiles, i, j)
+                        k_start_index -= 1
+                        found = True
+                    
+                    if found == False:
+                        continue
+                    
+                    grid_2048[i][k] += grid_2048[i][j]
+                    grid_2048[i][j] = 0
+                    break
+
+
+    add_tiles(grid_2048, empty_tiles)
+    show_grid(grid_2048)
+    print(empty_tiles)
+
     return grid_2048
-    """
+
+
+Launch_2048()

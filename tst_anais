@@ -1,0 +1,7 @@
+test_array: list[int] = [0,0,1,5]
+# =>[1,5,0,0]
+#move to left
+
+
+
+print(test_array)
