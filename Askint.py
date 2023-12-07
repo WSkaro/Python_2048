@@ -17,7 +17,7 @@ def get_input(message: str, maximum_include=-1) -> int:
         n: str = input(message)
         valid = isNumeric(n)
         if not valid: 
-            print("Entrez un NOMBRE !")
+            print("Veuillez à bien rentrer un nombre !")
         if maximum_include != -1 and int(n) > maximum_include:
             print("too big")
             valid = False
