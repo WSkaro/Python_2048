@@ -8,11 +8,15 @@ while True:
     def Launch_2048():
         main()
         
+
+        # Récupère la taille de la grille
         grid_size: int = get_input("Choisissez une taille de grille: ")
         grid_2048: List[List[int]] = [[0 for _ in range(grid_size)] for _ in range(grid_size)]
         
-        empty_tiles: list[list[int, int]] = func_empty_tiles(grid_2048)
+        empty_tiles: list[list[int, int]] = func_empty_tiles(grid_2048) # Récupère les cases vides
         
+
+        # Ajoute deux tuiles au hasard pour commencer
         add_tiles(grid_2048, empty_tiles)
         add_tiles(grid_2048, empty_tiles)
         
@@ -27,6 +31,8 @@ while True:
             movement(grid_2048, empty_tiles)
             print(empty_tiles)
             
+
+            # Vérifie si le joueur a perdu
             if check_lose(grid_2048, empty_tiles, grid_size) == True:    
                 print("---------------------༼ つ ◕_◕ ༽つ---------------------")
                 print()
@@ -35,12 +41,12 @@ while True:
                 print("---------------------༼ つ ◕_◕ ༽つ---------------------")
                 run = False
                 
-                
+            # Vérifie si le joueur a gagné
             if check_win(grid_2048):
                 run = False
             
                 
-            add_tiles(grid_2048, empty_tiles)
+            add_tiles(grid_2048, empty_tiles) # Ajoute une nouvelle tuile
             show_grid(grid_2048)
 
 
@@ -64,6 +70,7 @@ while True:
                 print("------> - Réfléchissez à chaque mouvement pour combiner les tuiles et atteindre la tuile 2048 !")
                 print("---------------------༼ つ ◕_◕ ༽つ---------------------")
 
+
     def show_grid(grid_2048):
         os.system("cls" if os.name == "nt" else "clear")
         print("----------༼ つ ◕_◕ ༽つ---------")
@@ -82,14 +89,14 @@ while True:
         print("----------༼ つ ◕_◕ ༽つ---------")
         print()
 
-
+    # Génère une tuile aléatoire (2 ou 4)
     def random_tiles():
         return random.choices([2, 4], weights=[9, 1])[0]
 
-
+    # Récupère les cases vides de la grille
     def func_empty_tiles(grid_2048) -> list[list[int, int]]:
         empty_tiles: list[list[int, int]] = []
-
+        # Trouve et stocke les cases vides de la grille
         for i in range(len(grid_2048)):
             for j in range(len(grid_2048[i])):
                 if grid_2048[i][j] == 0:
@@ -97,10 +104,12 @@ while True:
 
         return empty_tiles
 
-
+    # Ajoute une case vide à la liste
     def add_empty_tile(empty_tiles: list[list[int]], i: int, j: int):
         empty_tiles.append([i, j])
 
+
+    # Ajoute des tuiles aléatoires à des cases vides
     def add_tiles(grid_2048, empty_tiles):
         position = random.choice(empty_tiles)
         pos0 = position[0]
@@ -109,12 +118,13 @@ while True:
         
         grid_2048[pos0][pos1] = random_tiles()
 
-
+    # Met à jour les coordonnées d'une case vide après un mouvement
     def update_empty_tile(empty_tiles: list[list[int]], i: int, j: int, new_i: int, new_j: int):
         index: int = empty_tiles.index([i, j])
         empty_tiles[index][0] = new_i
         empty_tiles[index][1] = new_j
 
+    # Gère le mouvement du joueur
     def movement(grid_2048, empty_tiles):
         move = check_valid_input()
         
@@ -123,12 +133,14 @@ while True:
             exit()
         
         if move == "z":
+            # Parcours de chaque colonne
             for i in range(len(grid_2048)):
                 k_start_index = 0
                 for j in range(1, len(grid_2048[i])):
                     if grid_2048[j][i] == 0:
                         continue
                     
+                    # Fusionne les tuiles si possible et met à jour la liste des cases vides
                     for k in range(k_start_index, j):
                         found: bool = False
                         if grid_2048[k][i] == 0:
@@ -149,12 +161,14 @@ while True:
                         break
                         
         if move == "q":
+            # Parcours de chaque ligne
             for i in range(len(grid_2048)):
                 k_start_index = 0
                 for j in range(1, len(grid_2048)):
                     if grid_2048[i][j] == 0:
                         continue
                     
+                    # Fusionne les tuiles si possible et met à jour la liste des cases vides
                     for k in range(k_start_index, j):
                         found: bool = False
                         if grid_2048[i][k] == 0:
@@ -175,12 +189,14 @@ while True:
                         break
 
         if move == "s":
+            # Parcours de chaque colonne en sens inverse
             for i in range(len(grid_2048)):
                 k_start_index = len(grid_2048) - 1
                 for j in range(len(grid_2048[i])):
                     if grid_2048[j][i] == 0:
                         continue
                     
+                    # Fusionne les tuiles si possible et met à jour la liste des cases vides
                     for k in range(k_start_index, j, -1):
                         found: bool = False
                         if grid_2048[k][i] == 0:
@@ -201,12 +217,14 @@ while True:
                         break
 
         if move == "d":
+            # Parcours de chaque ligne en sens inverse
             for i in range(len(grid_2048)):
                 k_start_index = len(grid_2048[i]) - 1
                 for j in range(len(grid_2048)):
                     if grid_2048[i][j] == 0:
                         continue
                     
+                    # Fusionne les tuiles si possible et met à jour la liste des cases vides
                     for k in range(k_start_index, j, -1):
                         found: bool = False
                         if grid_2048[i][k] == 0:
