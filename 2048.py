@@ -11,11 +11,20 @@ while True:
 
         # Récupère la taille de la grille
         grid_size: int = get_input("Choisissez une taille de grille: ")
+        
         grid_2048: List[List[int]] = [[0 for _ in range(grid_size)] for _ in range(grid_size)]
         
+        """grid_2048 = \
+            [
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+                [0,0,0,0],
+            ]"""
+            
         empty_tiles: list[list[int, int]] = func_empty_tiles(grid_2048) # Récupère les cases vides
         
-
+        
         # Ajoute deux tuiles au hasard pour commencer
         add_tiles(grid_2048, empty_tiles)
         add_tiles(grid_2048, empty_tiles)
@@ -263,22 +272,20 @@ while True:
 
     def check_lose(grid_2048, empty_tiles, grid_size):
         if len(empty_tiles) == 0:
-            print("len de empty = 0")
             for i in range(len(grid_2048)):
                 for j in range(len(grid_2048[i])):
                     check_around_tile: int = grid_2048[i][j]
                     
                 if i < grid_size-1 and check_around_tile != grid_2048[i+1][j]:
-                    print("1 if verif")
-                    
+                    return True
+                
                 elif i > 0 and check_around_tile != grid_2048[i-1][j]:
-                    print("2 if verif")
+                    return True
                 
                 elif j < grid_size-1 and check_around_tile != grid_2048[i][j+1]:
-                    print("3 if verif")
-            
+                    return True
+                
                 elif j > 0 and check_around_tile != grid_2048[i][j-1]:
-                    print("4 if verif")
                     return True
                         
         return False
